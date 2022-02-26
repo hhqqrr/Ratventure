@@ -1,49 +1,3 @@
-# Ho Qi Ren (S10205561)- FI01
-
-##BASIC + ADVANCED + ADDITIONAL FEATURES
-
-#main menu#
-##the program will first start with an option to start new game etc, (town_text). if start game, everything will be default towns and orb will be randomised, if resume, program will read the last game saved to the file and
-##there cannot be more than one game saved at a time. if there are no game saved, user will be prompted.Players can view the leaderboard, if no on saved their scores yet, programe will display that to users, if less than 5 players,
-##programe will display that there are less than 5 players and show the players in ranking, if there are 5 or more, programe will show top 5 players. Last option is to exit game
-
-
-#in the game# TOWN
-##once in the game and everytime player is at the town, users can display their stats, which shows Hero damage, defence, HP and if player has the orb of power, the program shows that as well
-##users can display map, that function is just to show the map, another function is to allow players to move within the map (takes 1 day), when hero is in the open, he will encounter a rat minion(unless he is at the position of the King)
-##hero cannot move out of the map .if user try to move it out, it will not be moved and user will be asked to enter another option unitl the option is valid. The rest function can only be in
-##town and it restores the hero's HP to 20, and it takes 1 day. Save game option - allows users to save all data needed for the game,(orb,HP,damage,defence,days, town positions etc)
-##Last option is to exit the game
-##BONUS - players can buy sowrd(adds 3 damage),armor(adds 3 defence), and poison which only works with a sword and adds 5 damage, they can only buy each of the items once. In the shop, if players want to exit the shop, they can press'e'
-## if they do not have enough gold for any items they want, they will be prompted saying that they do noy have enough gold.
-## when they brought all of their items, they are unable to buy any more, these items can be brought with gold, that is earned b defeating rat minions in combat
-##BONUS - the last option in the town menu is to view thei inventory, that shows what items they currently have.
-##BONUS - when players choose to display their stats,how much gold they have will be shown as well.
-
-#in the game# IN THE OPEN (program is such that everytime user is in the open, will encounter a rat minion except for when met with rat King)
-##when player is out in the open,player can display stats, view map and move normally like mentioned previously. Users can also sense orb (adds 1 day) to either sense the direction of the orb or to collect the orb if user is standing on it
-##last option is to exit the game, players will be prompted if they are sure and if confirm exit, game will not be saved , if not the game continues. Only the function 'Move' and 'Exit game' works normally if
-## user ran away from the battle, if user did not run, all functions work normally
-
-#in the game# Combatting rat minions (everytime player runs, rat regains all health)
-##players have two option to either attack or run, after every attack, player's HP, Rats'HP ,its defence and its damage range will be shown, dealt damage = opponent damage minus your defence,
-##if player has HP less than or equal to 0, player loses the battle and exits the game
-##if rat has HP less than or equal to 0, player win the round and gets to continue the game. If player chooses to run, some of the open text function will not be working as mentioned before.
-##Both the rat and hero cannot deal negative damage to each other, if negative damage is detected, the damage will be 0
-##BONUS- each time player defeats a rat minion, they drop 50 gold.
-
-#in the game# Combatting the rat king (everytime player runs, king regains all health)
-##similarly, player can attack or run, when player HP drop to 0 and below,player loses and exit the game.If king's HP drop to 0 or below, player wins the game, player will be prompted if they want to save the score
-##if they want to save, they will enter their player name and program will save their name and score(days taken to complete). If they chose not to save, they will be prompted again if they are sure about not saving, if they are sure
-## about not saving, game will end without saving.
-
-#in the game# Combat (rat and rat King)(RESULT IS TIE)
-##if the result is tie, for combat with minions, rat minion dies but hero loses and exits. For the combat with the king, both king and hero dies, but when kingis dead, world is saved and player can still
-##save their score as per normal like defeating the rat king.
-
-
-
-
 from random import randint
 
 # +------------------------
@@ -88,6 +42,7 @@ print("----------------------")
 
 #function to display the menu (town or open text)
 def menu(txt):
+    print('=======================')
     num=1
     for i in txt:
         print('{}) {}'.format(num,i))
@@ -95,11 +50,12 @@ def menu(txt):
 
 #function to display player's statistics
 def stats(holding):
-    print('The Hero')
+    print('\n========================\nThe Hero\n')
     print('{:>8}: {}\n{:>8}: {}\n{:>8}: {}'.format('Damage',playerStats['dmg'],'Defence',playerStats['defence'],'HP',playerStats['HP']))
-    print('You have {} gold'.format(gold))#bonus feature
+    print('\nYou have {} gold'.format(gold))#bonus feature
     if holding == True:
         print('You are holding the orb of power\n')
+    print('========================')
 
 #function to display map
 def displayMap(world_map):                    
@@ -249,7 +205,7 @@ def combat(day,holding,gold):
     print('Day {}: You are out in the open'.format(day))
     start_game = True #declare for the game to loop first, which ends later when hero dies
     while True:
-        print('Encounter! - Rat')
+        print('\nEncounter! - Rat')
         for i in ratStats:
             print('{} : {}'.format(i,ratStats[i]))
         menu(fight_text) #display to run or attack
@@ -275,7 +231,7 @@ def combat(day,holding,gold):
                 takenD = 0
             playerStats['HP']-=takenD
             ratStats['HP']-=dealtD
-            print('You deal {} damage to the Rat'.format(dealtD))
+            print('\nYou deal {} damage to the Rat'.format(dealtD))
             print('Ouch! The Rat hit you for {} damage!'.format(takenD))
             if ratStats['HP'] <=0 and playerStats['HP'] <=0:#tie between the rat minion and the rat king
                 print('Both you and the rat minion are dead!')
@@ -577,45 +533,51 @@ def randTown(world_map):
                 world_map[i].insert(j,' ')
     return(world_map)
 
+#function to print a statement with spaces above and below
+def prints(text):
+    print(f'\n{text}\n')
 
 #function to display the leaderboard
 def viewLeaderboard():
     leaderboard = {}
-    file = open('BonusScores.txt','r')
-    for i in file:
-        i = i.strip()
-        i = i.split(':')
-        leaderboard[(i[0])] = (i[1])#put data from the file to a dictionary, with  key and value as name and days taken
-    file.close()
-    if leaderboard == {}:#no one in th eleaderboard
-        print('There are currently no players in the leaderboard!\n')
-    else:#there is someone who have saved their score
-        top = []
-        top5 = {}
-        for i in leaderboard:
-            top.append(int(leaderboard[i]))
-        top.sort()
-        print()
-        if len(leaderboard)<5:#less than 5 people have saved their scores
-            print('There are currently less than 5 players')
-            for i in range(len(leaderboard)):
-                for j in leaderboard:
-                    if top[i] == int(leaderboard[j]):
-                        top5[j]= top[i]
-                    
-        else:#else there is suffient people to display the full top 5 places
-            for i in range(0,5):
-                for j in leaderboard:
-                    if top[i] == int(leaderboard[j]):
-                        top5[j] = top[i]
-        print('{}'.format('-'*45))
-        print('{:10} {:<20}{:<10}'.format('Rank',"Player's name",'Days taken'))
-        print('{}'.format('-'*45))
-        rank = 1
-        for i in top5:
-            print('{:10} {:<20}{:<10}'.format(str(rank),i,top5[i]))
-            rank +=1
-        print('{}'.format('-'*45))
+    try:
+        file = open('BonusScores.txt','r')
+        for i in file:
+            i = i.strip()
+            i = i.split(':')
+            leaderboard[(i[0])] = (i[1])#put data from the file to a dictionary, with  key and value as name and days taken
+        file.close()
+        if leaderboard == {}:#no one in th eleaderboard
+            print('There are currently no players in the leaderboard!\n')
+        else:#there is someone who have saved their score
+            top = []
+            top5 = {}
+            for i in leaderboard:
+                top.append(int(leaderboard[i]))
+            top.sort()
+            print()
+            if len(leaderboard)<5:#less than 5 people have saved their scores
+                print('There are currently less than 5 players')
+                for i in range(len(leaderboard)):
+                    for j in leaderboard:
+                        if top[i] == int(leaderboard[j]):
+                            top5[j]= top[i]
+                        
+            else:#else there is suffient people to display the full top 5 places
+                for i in range(0,5):
+                    for j in leaderboard:
+                        if top[i] == int(leaderboard[j]):
+                            top5[j] = top[i]
+            print('{}'.format('-'*45))
+            print('{:10} {:<20}{:<10}'.format('Rank',"Player's name",'Days taken'))
+            print('{}'.format('-'*45))
+            rank = 1
+            for i in top5:
+                print('{:10} {:<20}{:<10}'.format(str(rank),i,top5[i]))
+                rank +=1
+            print('{}'.format('-'*45))
+    except:
+        prints("There is no one in the leaderboard yet!")
                  
 def exitt():#to provide validation if users are sure about exiting the game
     print('Exit the game? Your current progress will not be saved\n1) Exit\n2) Do not exit')
@@ -667,7 +629,7 @@ while True:
             int(k)
             
         except:
-            print('You do not have any saved game, please save a game before resuming it\n')
+            prints('You do not have any saved game, please save a game before resuming it')
             continue#skips all fowllowing lines
         file = open('savedGameBonus.txt','r')#open the file again
         owned = file.readline()#first line == items
@@ -722,7 +684,7 @@ while True:
         print('Invalid option')
 while start_game == True:
     loca = location()
-    print('Day {}: {}'.format(day,loca))#format the location where the hero is currently at
+    prints('Day {}: {}'.format(day,loca))#format the location where the hero is currently at
     menu(town_text)
     c = input('Enter choice: ')#did not convert input to integer as an error will occur when the user inputs str
     if c == '1': #shows stats
@@ -796,7 +758,8 @@ while start_game == True:
         day+=1
     elif c == '5': #save the game
         save = True #let it be true first, late can change
-        f = open('savedGameBonus.txt','r') #see if there is anything first VALIDATION
+
+        f = open('savedGameBonus.txt','w+') #see if there is anything first VALIDATION
         f.readline()#remove 1st line
         f.readline()#remove second line
         f.readline()
